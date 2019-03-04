@@ -8,7 +8,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    public static int num = 0;
+    public static final String KEY_SIMPLE_DATA = "data";
+    public static final int REQUEST_CODE_RANDOM = 101;
+    public int num = 0;
     public String s = Integer.toString(num);
     TextView textView;
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void doRandom(View v){
         Intent intent = new Intent(getApplicationContext(), RandomActivity.class);
+        intent.putExtra(KEY_SIMPLE_DATA, num);
         startActivity(intent);
     }
 
