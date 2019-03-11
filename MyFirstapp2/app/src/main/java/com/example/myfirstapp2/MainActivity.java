@@ -95,9 +95,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tran = fm.beginTransaction();
         switch (n){
             case 2:
+                bt1.setVisibility(View.GONE);
+                bt2.setVisibility(View.GONE);
+                bt3.setVisibility(View.GONE);
                 tran.replace(R.id.rf,randomFragment);
                 tran.commit();
                 break;
         }
+    }
+    public int getData(){
+        return num;
     }
 }
