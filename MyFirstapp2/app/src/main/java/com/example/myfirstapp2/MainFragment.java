@@ -15,15 +15,7 @@ public class MainFragment extends Fragment{
     View mainview;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mainview = inflater.inflate(R.layout.fragment_main, container, false);
-       /* Button bt3 = (Button) mainview.findViewById(R.id.button3);
-        bt3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
-                activity.onFragmentChanged(0);
-            }
-        });
-        */
+
         return mainview;
     }
 
