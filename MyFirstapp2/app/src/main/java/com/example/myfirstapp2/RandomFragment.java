@@ -17,22 +17,21 @@ import java.util.Random;
 import java.util.zip.Inflater;
 
 public class RandomFragment extends Fragment {
-    View randomview;
+    private View randomview;
     private int getnum;
     private String randomNumberInfo;
-    MyService myService;
-    
+    private Intent progressbarintent;
     int randomnumber;
-    String strRandomnumber;
-    String strgetnum;
+    private String strRandomnumber;
+    private String strgetnum;
     private TextView explain;
     private TextView centernum;
     private Button destroyServiceButton;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        myService = new MyService();
-        myService.onCreate();
+        progressbarintent = new Intent((MainActivity)getActivity(),MyService.class);
+        ((MainActivity)getActivity()).startService(progressbarintent);
         randomview = inflater.inflate(R.layout.fragment_random, container, false);
         getnum =((MainActivity)getActivity()).getData();
         strgetnum = Integer.toString(getnum);
@@ -50,7 +49,8 @@ public class RandomFragment extends Fragment {
         destroyServiceButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                myService.onDestroy();
+                progressbarintent = new Intent((MainActivity)getActivity(),MyService.class);
+                ((MainActivity)getActivity()).stopService(progressbarintent);
             }
         });
         return randomview;

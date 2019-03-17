@@ -26,16 +26,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     public int num=0;
-    TextView centerNumber;
+    private TextView centerNumber;
     public String stringnum = Integer.toString(num);
-    RandomFragment randomFragment;
-    FragmentManager fm;
-    FragmentTransaction tran;
-    Button bt1,bt2,bt3;
-    NotificationManager notifyManager;
-    NotificationCompat.Builder mBuilder;
-    String channelId = "channel";
-    String channelName = "Channel Name";
+    public RandomFragment randomFragment;
+    public FragmentManager fm;
+    public FragmentTransaction tran;
+    private Button bt1,bt2,bt3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         randomFragment = new RandomFragment();
 
 
-        //setFrag(0);
     }
 
     @Override
@@ -68,30 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.button3:
                 setFrag(2);
-                notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
-                    int importance = NotificationManager.IMPORTANCE_HIGH;
-                    NotificationChannel mChannel = new NotificationChannel(channelId,channelName,importance);
-                    notifyManager.createNotificationChannel(mChannel);
-                }
-                mBuilder =
-                        new NotificationCompat.Builder(getApplicationContext(),channelId);
-                Intent notificationIntent = new Intent(getApplicationContext(),MainActivity.class);
-                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                int requestID = (int) System.currentTimeMillis();
-                /*
-                PendingIntent pendingIntent = new pendingIntent.getActivity(getApplicationContext()
-                        ,requestID
-                        ,notificationIntent
-                        ,PendingIntent.FLAG_UPDATE_CURRENT);
-                        */
 
-                mBuilder.setSmallIcon(R.drawable.ic_launcher_background)
-                    .setContentTitle("Progressbar")
-                    .setContentText("progressbar")
-                    .setDefaults(Notification.DEFAULT_ALL);
-                mBuilder.setProgress(0,0,true);
-                notifyManager.notify(0,mBuilder.build());
                 break;
         }
     }
