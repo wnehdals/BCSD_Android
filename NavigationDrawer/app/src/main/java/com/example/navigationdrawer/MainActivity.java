@@ -1,5 +1,6 @@
 package com.example.navigationdrawer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();//햄버거버튼
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -96,6 +97,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.B) {
             fragment = new CalculatorFragment();
             title = "계산기";
+        }
+        else if(id == R.id.C){
+            title = "StopWatch";
+            fragment = new StopWatchFragment();
+
         }
 
         if (fragment != null) {
