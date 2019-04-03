@@ -22,7 +22,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 
 
-public class StopWatchFragment extends Fragment {
+public class StopWatchFragment extends Fragment implements View.OnClickListener,Runnable {
 
 
     private TextView StopWatchTime;
@@ -35,32 +35,12 @@ public class StopWatchFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerAdapter mRecyclerAdapter;
     private ArrayList<RecycleRecord> Items = new ArrayList<>();
-
+    private boolean isStop = false;
     public StopWatchFragment() {
         // Required empty public constructor
     }
 
-    class BtnOnClickListener implements Button.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.Start:
-                    TimeThread = new Thread(new TimeThread());
-                    TimeThread.start();
-                    break;
-                case R.id.Stop:
-                    StopWatchTime.setText("00:00:00");
-                    Items.clear();
-                    mRecyclerAdapter.notifyItemRangeRemoved(0,mRecyclerAdapter.getItemCount());
-                    mRecyclerAdapter.notifyDataSetChanged();
-                    TimeThread.interrupt();
-                    break;
-                case R.id.Pause:
-                    isRunning = !isRunning;
-                    break;
-            }
-        }
-    }
+
 
 
     @Override
@@ -68,18 +48,39 @@ public class StopWatchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_stop_watch, container, false);
         StopWatchTime = (TextView) view.findViewById(R.id.StopWatchTime);
-        BtnOnClickListener onClickListener = new BtnOnClickListener();
         StartButton = (Button) view.findViewById(R.id.Start);
-        StartButton.setOnClickListener(onClickListener);
+        StartButton.setOnClickListener(this);
         StopButton = (Button) view.findViewById(R.id.Stop);
-        StopButton.setOnClickListener(onClickListener);
+        StopButton.setOnClickListener(this);
         PauseButton = (Button) view.findViewById(R.id.Pause);
-        PauseButton.setOnClickListener(onClickListener);
+        PauseButton.setOnClickListener(this);
         mRecyclerView = view.findViewById(R.id.recyclerView);
         setAdapter();
 
 
         return view;
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.Start:
+                TimeThread = new Thread(this);
+                TimeThread.start();
+                isStop = false;
+                isRunning = true;
+                break;
+            case R.id.Stop:
+                StopWatchTime.setText("00:00:00");
+                isStop = true;
+                Items.clear();
+                mRecyclerAdapter.notifyItemRangeRemoved(0,mRecyclerAdapter.getItemCount());
+                mRecyclerAdapter.notifyDataSetChanged();
+                TimeThread.interrupt();
+                break;
+            case R.id.Pause:
+                isRunning = !isRunning;
+                break;
+        }
     }
 
     Handler timeHandler = new Handler() {
@@ -92,7 +93,9 @@ public class StopWatchFragment extends Fragment {
 
             @SuppressLint("DefaultLocale") String result = String.format("%02d:%02d:%02d", min, sec, mSec);
             StopWatchTime.setText(result);
-
+            if(isStop == true){
+                StopWatchTime.setText("00:00:00");
+            }
             if(msg.arg1%1000 == 0){
                 Items.add(new RecycleRecord("10초 경과 ("+result+")"));
                 mRecyclerAdapter.notifyDataSetChanged();
@@ -101,30 +104,21 @@ public class StopWatchFragment extends Fragment {
         }
     };
 
-    public class TimeThread implements Runnable {
-        @Override
-        public void run() {
-            int i = 0;
+    @Override
+    public void run() {
+        int i = 0;
 
-            while (true) {
-                while (isRunning) { //일시정지를 누르면 멈춤
-                    Message msg = new Message();
-                    msg.arg1 = i++;
-                    timeHandler.sendMessage(msg);
+        while (true) {
+            while (isRunning) { //일시정지를 누르면 멈춤
+                Message msg = new Message();
+                msg.arg1 = i++;
+                timeHandler.sendMessage(msg);
 
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                StopWatchTime.setText("");
-                                StopWatchTime.setText("00:00:00");
-                            }
-                        });
-                        return; // 인터럽트 받을 경우 return
-                    }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return; // 인터럽트 받을 경우 return
                 }
             }
         }
