@@ -10,5 +10,7 @@
     <string name="signup">회원가입</string>
     <string name="success_signup">회원가입 성공</string>
     <string name="failed_signup">회원가입 실패</string>
+    <!--
     <string name="default_web_client_id" translatable="false">38356161732-dpk4u73bun1a2ecubc41q5jhs6vmti8u.apps.googleusercontent.com</string>
+    -->
 </resources>
