@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +28,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.w3c.dom.Text;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,TaskContract.View{
     private static final int RC_SIGN_IN = 100;
 
     // 구글api클라이언트
@@ -40,24 +43,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleApiClient mGoogleApiClient;
     // 파이어베이스 인증 객체 생성
     private FirebaseAuth mAuth;
-
+    TaskContract.Presenter mainPresenter;
     // 구글  로그인 버튼
     //private SignInButton buttonGoogle;
     @BindView(R.id.guideEmail)
     TextView guideEmail;
     @BindView(R.id.writeEamil)
-    TextView writeEmail;
+    EditText writeEmail;
     @BindView(R.id.guidePassword)
     TextView guidePassword;
     @BindView(R.id.writePassword)
-    TextView writePassword;
+    EditText writePassword;
     @BindView(R.id.logintButton)
     Button newMemberEnrollButton;
     @BindView(R.id.btn_googleSignIn)
     SignInButton buttonGoogle;
     @OnClick(R.id.logintButton)
     public void clickLogin(){
-        Toast.makeText(this,"로그인기능이구현되지않았습니다", Toast.LENGTH_LONG).show();
+        String Id = writeEmail.getText().toString();
+        String passWord = writePassword.getText().toString();
+        mainPresenter.confirm(Id,passWord);
+
+
     }
     @OnClick(R.id.btn_googleSignIn)
     public void clickGoogleLogin(){
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mainPresenter = new MainPresenter(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -132,6 +140,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
+    @Override
+    public void showResult(int a) {
+        if(a == 1) {
+            Intent afterlogin = new Intent(getApplicationContext(), MainscreenActivity.class);
+            startActivity(afterlogin);
+            Toast.makeText(this,"로그인 성공공", Toast.LENGTH_LONG).show();
+        }
+        if(a == 0){
+            Toast.makeText(this,"틀립니다", Toast.LENGTH_LONG).show();
+        }
+    }
 
+    @Override
+    public void setPresenter(TaskContract.Presenter presenter) {
 
+    }
 }
